@@ -1,8 +1,8 @@
 """Init
 
-Revision ID: 6df6ef4ef144
+Revision ID: 77223d326ca7
 Revises: 
-Create Date: 2021-07-24 09:36:04.103062
+Create Date: 2021-07-24 13:56:18.536317
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6df6ef4ef144'
+revision = '77223d326ca7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,7 +29,7 @@ def upgrade():
     sa.Column('active_sockets', sa.String(length=50), nullable=False),
     sa.Column('cycle_time', sa.Integer(), nullable=False),
     sa.Column('cycle_active_time', sa.Integer(), nullable=False),
-    sa.Column('status', sa.Enum('unknown', 'work', 'adjustment', 'smed', 'stop', 'fault', name='sensorstatus'), nullable=False),
+    sa.Column('status', sa.Integer(), nullable=False),
     sa.Column('mqtt_label', sa.Integer(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

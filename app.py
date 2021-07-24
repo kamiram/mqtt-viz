@@ -5,7 +5,6 @@ from flask import Flask
 from flask_admin import Admin
 from flask_babelex import Babel
 from flask_bootstrap import Bootstrap
-from flask_mqtt import Mqtt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
@@ -13,7 +12,7 @@ from schema import metadata, User, Sensor
 from views.admin import register_admin
 
 from views.index import IndexView
-
+from mqtt_worker import mqtt
 from commands import register_commands
 
 
@@ -50,7 +49,6 @@ def create_app():
 
     bootstrap = Bootstrap(app)
 
-    mqtt = Mqtt()
     mqtt.init_app(app)
     app.mqtt = mqtt
 
@@ -59,8 +57,8 @@ def create_app():
         print(f'subscribe to "{topic}/{sensor.mqtt_label}"')
         mqtt.subscribe(f'{topic}/{sensor.mqtt_label}')
 
-    socketio = SocketIO(app)
-    app.socketio = socketio
+    # socketio = SocketIO(app, )
+    # app.socketio = socketio
 
     app.add_url_rule('/', view_func=IndexView.as_view('index'))
     app.add_url_rule('/index.html', view_func=IndexView.as_view('index.html'))

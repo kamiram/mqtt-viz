@@ -1,14 +1,37 @@
-.thumb{
-  float: left;
-  filter: brightness(60%);
-  transition: .3
+.outer{
+    text-align: center;
 }
-.thumb:hover{
-  filter: brightness(100%);
-  transition: .3
+.inner{
+    width: auto;
+    display: inline-block;
+    text-align: left;
 }
-.thumb IMG{
-  padding: 4px;
-  max-width: 400px;
-  max-height: 300px;
+.block {
+    display: inline-block;
+    /*width: 350px;*/
+    /*height: 8em;*/
+    float: left;
+    border: 1px solid black;
+    background: white;
+    color: black;
+    padding: 5px 10px;
+    margin: 5px 5px;
+}
+.block div{
+    margin: 2px;
+    width: 350px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+span.label{
+    display: inline-block;
+    width: 130px;
+    font-weight: bold;
+    overflow: hidden;
+}
+span.value{
+    display: inline-block;
+    width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
 }
