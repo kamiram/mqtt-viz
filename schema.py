@@ -87,10 +87,10 @@ class Sensor(base, FieldsInit):
         if self.status == SensorStatus.smed:
             return 'lightblue'
         if self.status == SensorStatus.stop:
-            return 'gray'
+            return 'silver'
         if self.status == SensorStatus.fault:
             return 'red'
-        return 'lightgray'
+        return 'plum'
 
     @property
     def cnt_sockets_extra(self):
