@@ -1,4 +1,7 @@
+from time import sleep
+
 import click
+import flask
 from flask import current_app
 from flask.cli import AppGroup
 import csv
@@ -26,6 +29,21 @@ def register_commands(app):
 
     @sensors_cli.command('scan', help='Test sensors scan.', with_appcontext=True)
     def sensors_import():
-        db = current_app.db
-        
+        mqtt = flask.current_app.mqtt
+        session = current_app.db.session
+
+        @mqtt.on_message()
+        def handle_mqtt_message(client, userdata, message):
+            data = dict(
+                topic=message.topic,
+                payload=message.payload.decode()
+            )
+
+        for sensor in session.query(Sensor):
+            mqtt.subscribe(str(sensor.mqtt_label))
+
+        print('Precc Ctrl-C for exit')
+        while True:
+            sleep(0.1)
+
     app.cli.add_command(sensors_cli)

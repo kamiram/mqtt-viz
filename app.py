@@ -4,13 +4,13 @@ from flask import Flask
 from flask_admin import Admin
 from flask_babelex import Babel
 from flask_bootstrap import Bootstrap
+from flask_mqtt import Mqtt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
 from schema import metadata, User
 from views.admin import register_admin
 
-from views.admin.index import AdminIndexView
 from views.index import IndexView
 
 from commands import register_commands
@@ -24,8 +24,14 @@ def create_app():
         app.config['MQTT'] = json.loads(file.read())
     app.url_map.host_matching = False
 
-    db = SQLAlchemy(app, metadata=metadata)
+    app.config['MQTT_BROKER_URL'] = app.config['MQTT']['mqtt']['host']
+    app.config['MQTT_BROKER_PORT'] = app.config['MQTT']['mqtt']['port']
+    app.config['MQTT_USERNAME'] = app.config['MQTT']['mqtt']['username']
+    app.config['MQTT_PASSWORD'] = app.config['MQTT']['mqtt']['password']
+    app.config['MQTT_KEEPALIVE'] = 5
+    app.config['MQTT_TLS_ENABLED'] = False
 
+    db = SQLAlchemy(app, metadata=metadata)
     app.db = db
 
     babel = Babel(app)
@@ -42,6 +48,10 @@ def create_app():
         return db.session.query(User).get(user_id)
 
     bootstrap = Bootstrap(app)
+
+    mqtt = Mqtt()
+    mqtt.init_app(app)
+    app.mqtt = mqtt
 
     app.add_url_rule('/', view_func=IndexView.as_view('index'))
     app.add_url_rule('/index.html', view_func=IndexView.as_view('index.html'))
