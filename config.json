@@ -1,0 +1,87 @@
+{
+    "mqtt": {
+        "username": "",
+        "password": "",
+        "host": "localhost",
+        "port": 1883,
+        "topic": "imm"
+    },
+    "misc": {
+        "interval_ms": 1,
+        "verbose": true
+    },
+    "port": {
+        "0": {
+            "port": 4,
+            "m": 1,
+            "value": "ON",
+            "cnt": "278"
+        },
+        "1": {
+            "port": 4,
+            "m": 2,
+            "value": "OFF",
+            "cnt": "0"
+        },
+        "2": {
+            "port": 11,
+            "m": 1,
+            "value": "ON",
+            "cnt": "323"
+        },
+        "3": {
+            "port": 11,
+            "m": 2,
+            "value": "OFF",
+            "cnt": "44537"
+        },
+        "4": {
+            "port": 0,
+            "m": 1,
+            "value": "ON",
+            "cnt": "1434"
+        },
+        "5": {
+            "port": 0,
+            "m": 2,
+            "value": "OFF",
+            "cnt": "453"
+        },
+        "6": {
+            "port": 25,
+            "m": 1,
+            "value": "ON",
+            "cnt": "7863"
+        },
+        "7": {
+            "port": 25,
+            "m": 2,
+            "value": "OFF",
+            "cnt": "123"
+        },
+        "8": {
+            "port": 12,
+            "m": 1,
+            "value": "ON",
+            "cnt": "4563"
+        },
+        "9": {
+            "port": 12,
+            "m": 2,
+            "value": "OFF",
+            "cnt": "4527"
+        },
+        "10": {
+            "port": 6,
+            "m": 1,
+            "value": "ON",
+            "cnt": "5345"
+        },
+        "11": {
+            "port": 6,
+            "m": 2,
+            "value": "OFF",
+            "cnt": "75"
+        }
+    }
+}

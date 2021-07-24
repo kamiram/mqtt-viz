@@ -1,0 +1,8 @@
+{% extends 'admin/model/edit.html' %}
+  {% block edit_form %}
+    {% macro render_field(form, field, kwargs={}, caller=None) %}
+           <h1>{{ field }}</h1>
+    {% endmacro %}
+    {{ lib.render_form(form, return_url, extra(), form_opts) }}
+
+  {% endblock %}

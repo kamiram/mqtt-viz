@@ -1,0 +1,6 @@
+SQLALCHEMY_ECHO = True
+DEBUG = True
+
+SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
+SERVER_URL = '127.0.0.1'
+SERVER_PORT = 5000

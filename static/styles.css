@@ -1,0 +1,14 @@
+.thumb{
+  float: left;
+  filter: brightness(60%);
+  transition: .3
+}
+.thumb:hover{
+  filter: brightness(100%);
+  transition: .3
+}
+.thumb IMG{
+  padding: 4px;
+  max-width: 400px;
+  max-height: 300px;
+}
