@@ -20,7 +20,7 @@ def register_admin(app):
 
     admin = Admin(
         app,
-        name='MQTT Vix', template_mode='bootstrap4',
+        name='MQTT Viz', template_mode='bootstrap4',
         index_view=AdminIndexView(), base_template='admin/master.html'
     )
 
