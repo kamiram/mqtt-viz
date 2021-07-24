@@ -1,3 +1,4 @@
+import json
 from time import sleep
 
 import click
@@ -30,17 +31,11 @@ def register_commands(app):
     @sensors_cli.command('scan', help='Test sensors scan.', with_appcontext=True)
     def sensors_import():
         mqtt = flask.current_app.mqtt
-        session = current_app.db.session
 
         @mqtt.on_message()
         def handle_mqtt_message(client, userdata, message):
-            data = dict(
-                topic=message.topic,
-                payload=message.payload.decode()
-            )
-
-        for sensor in session.query(Sensor):
-            mqtt.subscribe(str(sensor.mqtt_label))
+            print(message.topic)
+            print(json.dumps(json.loads(message.payload.decode()), indent=4))
 
         print('Precc Ctrl-C for exit')
         while True:
