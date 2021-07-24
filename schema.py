@@ -97,7 +97,7 @@ class Sensor(base, FieldsInit):
         return f'{self.cnt_sockets}/{self.active_sockets}'
 
     @property
-    def cyrcle_time_extra(self):
+    def cycle_time_extra(self):
         return f'{self.cycle_time}/{self.cycle_active_time}'
 
     def __str__(self):

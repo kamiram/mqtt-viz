@@ -17,7 +17,7 @@
     <div class="inner">
         {% for sensor in sensors %}
         <div class="block{% if sensor.status_blink %} blink{% endif %}" style="background-color: {{ sensor.status_color }}" id="block-{{ sensor.id }}">
-            <div><span class="label">тип</span><span class="value" id="value-id-{{ sensor.id }}">{{ sensor.type }}</span></div>
+            <div><span class="label">тип</span><span class="value" id="value-type-{{ sensor.id }}">{{ sensor.type }}</span></div>
             <div><span class="label">модель</span><span class="value" id="value-model-{{ sensor.id }}">{{ sensor.model }}</span></div>
             <div><span class="label">п/ф</span><span class="value" id="value-pressform-{{ sensor.id }}">{{ sensor.pressform }}</span></div>
             <div><span class="label">продукт</span><span class="value" id="value-product-{{ sensor.id }}">{{ sensor.product }}</span></div>

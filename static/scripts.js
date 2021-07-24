@@ -5,13 +5,23 @@ function initSocketIO(serverUrl){
     ioClient.emit("message", {data: "connected"});
     ioClient.on("message", function(msg) {
         console.log(msg);
-        document.getElementById(`block-${msg.id}`).style.backgroundColor = msg.status_color;
-        if(msg.status_blink){
+        if(msg.hasOwnProperty("status_blink") && msg.status_blink){
             document.getElementById(`block-${msg.id}`).classList.add("blink");
         } else {
             document.getElementById(`block-${msg.id}`).classList.remove("blink");
         }
-        document.getElementById(`value-cycle_active_time-${msg.id}`).innerText = msg.cycle_active_time;
+        var fields = [
+            'type', 'model', 'number', 'product', 'pressform', 'cnt_sockets_extra',
+            'status', 'mqtt_label', 'cycle_active_time', 'cycle_active_time'
+        ];
+        if(msg.hasOwnProperty("status_color")){
+            document.getElementById(`block-${msg.id}`).style.backgroundColor = msg.status_color;
+        }
+        for(var i = 0; i < fields.length; i++){
+            if(msg.hasOwnProperty(fields[i]) && document.getElementById(`value-${fields[i]}-${msg.id}`)){
+                document.getElementById(`value-${fields[i]}-${msg.id}`).innerText = msg[fields[i]];
+            }
+        }
     });
   });
 }
