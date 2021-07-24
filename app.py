@@ -23,16 +23,7 @@ def create_app():
     app.app_context().push()
     app.config.from_pyfile('config.py')
     app.config.from_pyfile('config_local.py')
-    with open('config.json') as file:
-        app.config['MQTT'] = json.loads(file.read())
     app.url_map.host_matching = False
-
-    app.config['MQTT_BROKER_URL'] = app.config['MQTT']['mqtt']['host']
-    app.config['MQTT_BROKER_PORT'] = app.config['MQTT']['mqtt']['port']
-    app.config['MQTT_USERNAME'] = app.config['MQTT']['mqtt']['username']
-    app.config['MQTT_PASSWORD'] = app.config['MQTT']['mqtt']['password']
-    app.config['MQTT_KEEPALIVE'] = 5
-    app.config['MQTT_TLS_ENABLED'] = False
 
     db = SQLAlchemy(app, metadata=metadata)
     app.db = db
@@ -64,7 +55,7 @@ def create_app():
     mqtt_worker.mqtt.init_app(app)
     app.mqtt = mqtt_worker.mqtt
 
-    topic = app.config['MQTT']['mqtt']['topic']
+    topic = app.config['MQTT_TOPIC']
     for sensor in db.session.query(Sensor):
         print(f'subscribe to "{topic}/{sensor.mqtt_label}"')
         mqtt_worker.mqtt.subscribe(f'{topic}/{sensor.mqtt_label}')
