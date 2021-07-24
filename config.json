@@ -1,9 +1,9 @@
 {
     "mqtt": {
-        "username": "",
-        "password": "",
-        "host": "localhost",
-        "port": 1883,
+        "username": "dfjlrctd",
+        "password": "4j_dNmGV_0XS",
+        "host": "driver.cloudmqtt.com",
+        "port": 18912,
         "topic": "imm"
     },
     "misc": {

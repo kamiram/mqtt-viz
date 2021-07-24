@@ -23,3 +23,9 @@ def register_commands(app):
                 db.session.add(sensor)
         db.session.commit()
     app.cli.add_command(sensors_cli)
+
+    @sensors_cli.command('scan', help='Test sensors scan.', with_appcontext=True)
+    def sensors_import():
+        db = current_app.db
+        
+    app.cli.add_command(sensors_cli)
