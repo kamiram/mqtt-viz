@@ -1,15 +1,22 @@
 {% extends "base.html" %}
 {% block styles %}
-<link href="/static/styles.css" rel="stylesheet">
+<link href="{{url_for('.static', filename='styles.css')}}" rel="stylesheet">
 {% endblock %}
 {% block scripts %}
 {{ super() }}
+<script src="{{url_for('.static', filename='scripts.js')}}"></script>
+<script src="{{url_for('.static', filename='socket.io.min.js')}}"></script>
+<script language="JavaScript">
+  document.addEventListener("DOMContentLoaded", () => {
+    initSocketIO('{{ config['SERVER_URL'] }}');
+  });
+</script>
 {% endblock %}
 {% block content %}
 <div class="outer">
     <div class="inner">
         {% for sensor in sensors %}
-        <div class="block" style="background-color: {{ sensor.status_color }}">
+        <div class="block{% if sensor.status_blink %} blink{% endif %}" style="background-color: {{ sensor.status_color }}" id="block-{{ sensor.id }}">
             <div><span class="label">тип</span><span class="value" id="value-id-{{ sensor.id }}">{{ sensor.type }}</span></div>
             <div><span class="label">модель</span><span class="value" id="value-model-{{ sensor.id }}">{{ sensor.model }}</span></div>
             <div><span class="label">п/ф</span><span class="value" id="value-pressform-{{ sensor.id }}">{{ sensor.pressform }}</span></div>

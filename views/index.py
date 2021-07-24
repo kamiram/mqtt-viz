@@ -11,4 +11,4 @@ class IndexView(View):
         session = current_app.db.session
         sensors = session.query(Sensor)
 
-        return flask.render_template('index.html', sensors=sensors)
+        return flask.render_template('index.html', sensors=sensors, config=current_app.config)

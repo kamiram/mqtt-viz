@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import MetaData, Column, Boolean, Integer, String, DateTime, ForeignKey, JSON, func, Enum
+from sqlalchemy import MetaData, Column, Boolean, Integer, String, DateTime, ForeignKey, JSON, func, Enum, Float
 from sqlalchemy.orm import declarative_base, relationship
 
 from flask_bcrypt import generate_password_hash
@@ -62,15 +62,26 @@ class Sensor(base, FieldsInit):
     pressform = Column(String(50), nullable=False, default='')
     cnt_sockets = Column(String(50), nullable=False, default='')
     active_sockets = Column(String(50), nullable=False, default='')
-    cycle_time = Column(Integer, nullable=False, default='0')
-    cycle_active_time = Column(Integer, nullable=False, default='0')
+    cycle_time = Column(Float, nullable=False, default='0')
+    cycle_active_time = Column(Float, nullable=False, default='0')
+    last_time = Column(Float, nullable=False, default='0')
     status = Column(Integer, nullable=False, default=SensorStatus.unknown)
     mqtt_label = Column(Integer, nullable=False, default=0)
 
     @property
+    def status_blink(self):
+        if self.status == SensorStatus.work and self.cycle_active_time >= self.cycle_time * 2:
+            return True
+        return False
+
+    @property
     def status_color(self):
         if self.status == SensorStatus.work:
-            return 'white'
+            if self.cycle_active_time <= self.cycle_time * 1.2:
+                return 'lightgreen'
+            if self.cycle_active_time <= self.cycle_time * 2:
+                return 'yellow'
+            return 'yellow'
         if self.status == SensorStatus.adjustment:
             return 'orange'
         if self.status == SensorStatus.smed:
