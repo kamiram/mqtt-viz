@@ -8,25 +8,26 @@
 <script src="{{url_for('.static', filename='socket.io.min.js')}}"></script>
 <script language="JavaScript">
   document.addEventListener("DOMContentLoaded", () => {
-    initSocketIO('{{ config['SERVER_URL'] }}');
+    initSystem('{{ config['SOCKET_SERVER_URL'] }}', '{{ config['HTTP_SERVER_URL'] }}');
   });
 </script>
 {% endblock %}
 {% block content %}
 <div class="outer">
-    <div class="inner">
-        {% for sensor in sensors %}
-        <div class="block{% if sensor.status_blink %} blink{% endif %}" style="background-color: {{ sensor.status_color }}" id="block-{{ sensor.id }}">
-            <div><span class="label">тип</span><span class="value" id="value-type-{{ sensor.id }}">{{ sensor.type }}</span></div>
-            <div><span class="label">модель</span><span class="value" id="value-model-{{ sensor.id }}">{{ sensor.model }}</span></div>
-            <div><span class="label">п/ф</span><span class="value" id="value-pressform-{{ sensor.id }}">{{ sensor.pressform }}</span></div>
-            <div><span class="label">продукт</span><span class="value" id="value-product-{{ sensor.id }}">{{ sensor.product }}</span></div>
-            <div><span class="label">кол. гнёзд</span><span class="value" id="value-cnt_sockets-{{ sensor.id }}">{{ sensor.cnt_sockets }}</span></div>
-            <div><span class="label">акт. кол. гнёзд</span><span class="value" id="value-active_sockets-{{ sensor.id }}">{{ sensor.active_sockets }}</span></div>
-            <div><span class="label">время цикла</span><span class="value" id="value-cycle_time-{{ sensor.id }}">{{ sensor.cycle_time }}</span></div>
-            <div><span class="label">акт. время цикла</span><span class="value" id="value-cycle_active_time-{{ sensor.id }}">{{ sensor.cycle_active_time }}</span></div>
-        </div>
-        {% endfor %}
+    <div class="inner"  id="content">
     </div>
 </div>
+<div id="sensorTemlate">
+    <div class="block" id="block-{sensor.id}">
+        <div><span class="label">номер</span><span class="value value-number"></span></div>
+        <div><span class="label">модель</span><span class="value value-model"></span></div>
+        <div><span class="label">п/ф</span><span class="value value-pressform"></span></div>
+        <div><span class="label">продукт</span><span class="value value-product"></span></div>
+        <div><span class="label">кол. гнёзд</span><span class="value value-cnt_sockets"></span></div>
+        <div><span class="label">акт. кол. гнёзд</span><span class="value value-active_sockets"></span></div>
+        <div><span class="label">время цикла</span><span class="value value-cycle_time"></span></div>
+        <div><span class="label">акт. время цикла</span><span class="value value-cycle_active_time"></span></div>
+    </div>
+</div>
+
 {% endblock %}

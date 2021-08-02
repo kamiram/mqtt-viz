@@ -1,5 +1,29 @@
-function initSocketIO(serverUrl){
-  ioClient = io.connect(serverUrl);
+function loadData(httpServerUrl){
+    $.ajax({
+      type: "POST",
+      url: "/data.json",
+      data: {}
+    })
+    .done(function( data ) {
+      var blocks = [];
+      var template = $('#sensorTemlate').html();
+      for(var i=0; i < data.length; i++){
+        var block = template;
+        block=block.replace('{sensor.id}', data[i].id)
+        blocks.push(block);
+      }
+      $('#content').html(blocks.join(''));
+      var fields = ['number', 'pressform', 'model', 'product', 'cnt_sockets', 'active_sockets'];
+      for(var i=0; i < data.length; i++){
+        for(var j=0; j < fields.length; j++){
+             $(`#block-${data[i].id} .value-${fields[j]}`).html(data[i][fields[j]]);
+        }
+      }
+    });
+}
+function initSystem(socketServerUrl, httpServerUrl){
+  loadData(httpServerUrl);
+  ioClient = io.connect(socketServerUrl);
   ioClient.on("connect", socket => {
     console.log("connected to server " + serverUrl);
     ioClient.emit("message", {data: "connected"});

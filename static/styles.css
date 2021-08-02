@@ -7,6 +7,7 @@
     text-align: left;
 }
 .block {
+
     display: inline-block;
     /*width: 350px;*/
     /*height: 8em;*/
@@ -36,7 +37,37 @@ span.value{
     overflow: hidden;
 }
 
-.blink {
+
+.status-green{
+  background-color: lightgreen;
+}
+
+.status-red{
+  background-color: red;
+}
+
+.status-orange{
+  background-color: orange;
+}
+
+.status-blue{
+  background-color: blue;
+}
+
+.status-gray{
+  background-color: gray;
+}
+
+.status-unknown{
+  background-color: plum;
+}
+
+.status-yellow{
+  background-color: yellow;
+}
+
+.status-yellowblink {
+  background-color: yellow;
   animation-name: blinker;
   animation-iteration-count: infinite;
   animation-timing-function: cubic-bezier(1.0,0,0,1.0);
@@ -55,4 +86,8 @@ span.value{
 @-webkit-keyframes blinker {
   from { opacity: 1.0; }
   to { opacity: 0.3; }
+}
+
+#sensorTemlate {
+display: none;
 }

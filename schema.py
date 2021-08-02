@@ -1,6 +1,5 @@
-import enum
 
-from sqlalchemy import MetaData, Column, Boolean, Integer, String, DateTime, ForeignKey, JSON, func, Enum, Float
+from sqlalchemy import MetaData, Column, Boolean, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import declarative_base, relationship
 
 from flask_bcrypt import generate_password_hash
@@ -44,6 +43,14 @@ class User(base, FieldsInit):
 
 
 class SensorStatus:
+    names = {
+        0: 'Неизвестно',
+        1: 'Работает',
+        2: 'Наладка',
+        3: 'smed',
+        4: 'Остановлено',
+        5: 'Сбой',
+    }
     unknown = 0
     work = 1
     adjustment = 2
@@ -52,14 +59,44 @@ class SensorStatus:
     fault = 5
 
 
+class SensorModel(base, FieldsInit):
+    __tablename__ = 'sensor_model'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class SensorProduct(base, FieldsInit):
+    __tablename__ = 'sensor_product'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class SensorPressform(base, FieldsInit):
+    __tablename__ = 'sensor_pressform'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
 class Sensor(base, FieldsInit):
-    __tablename__ = 'sensors'
+    __tablename__ = 'sensor'
     id = Column(Integer, primary_key=True)
     type = Column(String(50), nullable=False, default='')
-    model = Column(String(50), nullable=False, default='')
+    model_id = Column(Integer, ForeignKey('sensor_model.id'), index=True, nullable=False)
+    model = relationship(SensorModel)
+    product_id = Column(Integer, ForeignKey('sensor_product.id'), index=True, nullable=False)
+    product = relationship('SensorProduct')
+    pressform_id = Column(Integer, ForeignKey('sensor_pressform.id'), index=True, nullable=False)
+    pressform = relationship(SensorPressform)
     number = Column(Integer, nullable=False, default=0)
-    product = Column(String(50), nullable=False, default='')
-    pressform = Column(String(50), nullable=False, default='')
     cnt_sockets = Column(String(50), nullable=False, default='')
     active_sockets = Column(String(50), nullable=False, default='')
     cycle_time = Column(Float, nullable=False, default='0')
@@ -78,19 +115,19 @@ class Sensor(base, FieldsInit):
     def status_color(self):
         if self.status == SensorStatus.work:
             if self.cycle_active_time <= self.cycle_time * 1.2:
-                return 'lightgreen'
+                return 'green'
             if self.cycle_active_time <= self.cycle_time * 2:
-                return 'yellow'
+                return 'yellowblink'
             return 'yellow'
         if self.status == SensorStatus.adjustment:
             return 'orange'
         if self.status == SensorStatus.smed:
-            return 'lightblue'
+            return 'blue'
         if self.status == SensorStatus.stop:
-            return 'silver'
+            return 'gray'
         if self.status == SensorStatus.fault:
             return 'red'
-        return 'plum'
+        return 'unknown'
 
     @property
     def cnt_sockets_extra(self):
@@ -103,3 +140,9 @@ class Sensor(base, FieldsInit):
     def __str__(self):
         return f'{self.id}: {self.model} - {self.product}'
 
+    dict_fields = [
+        'id', 'type', 'model', 'product', 'pressform', 'number', 'cnt_sockets', 'active_sockets', 'status_color',
+    ]
+
+    def as_dict(self):
+        return {field: str(getattr(self, field)) for field in self.dict_fields}
