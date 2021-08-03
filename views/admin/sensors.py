@@ -1,4 +1,6 @@
+import flask
 from flask_admin.contrib.sqla import ModelView
+import requests
 
 from schema import Sensor, SensorStatus
 from . import AdminViewMixin
@@ -39,8 +41,4 @@ class SensorsAdminView(AdminViewMixin, ModelView):
         super().__init__(Sensor, session, name='Оборудование', *args, **kwargs)
 
     def after_model_change(self, form, model, is_created):
-        # data = {field: getattr(model, field) for field in self.column_labels.keys()}
-        # data['id'] = model.id
-        # print(data)
-        # current_app.socketio.emit('message', data=data)
-        return
+        requests.post(flask.current_app.config['SOCKET_SERVER_URL'] + 'update_sensor', data=model.as_dict())

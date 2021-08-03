@@ -15,6 +15,19 @@ sio = socketio.AsyncServer(async_mode='aiohttp', cors_allowed_origins='*')
 last_active_time = dict()
 
 
+async def emit_update_socket(data):
+    await sio.emit('sensor_update', dict(data))
+
+
+async def update_socket(request):
+    data = await request.post()
+    loop.create_task(emit_update_socket(data))
+    return web.Response(text="Try to emit update")
+
+
+app.add_routes([web.post('/update_sensor', update_socket)])
+
+
 async def mqtt_worker():
     async with Client(
                 hostname=conf.MQTT_BROKER_HOST,
