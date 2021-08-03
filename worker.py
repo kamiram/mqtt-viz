@@ -3,19 +3,19 @@ import os
 import signal
 import time
 
+import config_local
+
 from gmqtt import Client as MQTTClient
 
-# gmqtt also compatibility with uvloop
 import uvloop
+
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
-
 STOP = asyncio.Event()
 
 
 def on_connect(client, flags, rc, properties):
     print('Connected')
-    client.subscribe('TEST/#', qos=0)
+    client.subscribe(config_local.MQTT_TOPIC + '/#', qos=0)
 
 
 def on_message(client, topic, payload, qos, properties):
@@ -31,18 +31,21 @@ def on_subscribe(client, mid, qos, properties):
 def ask_exit(*args):
     STOP.set()
 
-async def main(broker_host, token):
-    client = MQTTClient("client-id")
+async def main():
+    client = MQTTClient("viz")
 
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_disconnect = on_disconnect
     client.on_subscribe = on_subscribe
 
-    client.set_auth_credentials(token, None)
-    await client.connect(broker_host)
+    client.set_auth_credentials(username=config_local.MQTT_USERNAME, password=config_local.MQTT_PASSWORD)
+    await client.connect(
+        config_local.MQTT_BROKER_URL,
+        port=config_local.MQTT_BROKER_PORT,
+        keepalive=config_local.MQTT_KEEPALIVE
+    )
 
-    client.publish('TEST/TIME', str(time.time()), qos=1)
 
     await STOP.wait()
     await client.disconnect()
@@ -51,10 +54,7 @@ async def main(broker_host, token):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
 
-    host = 'mqtt.flespi.io'
-    token = os.environ.get('FLESPI_TOKEN')
-
     loop.add_signal_handler(signal.SIGINT, ask_exit)
     loop.add_signal_handler(signal.SIGTERM, ask_exit)
 
-    loop.run_until_complete(main(host, token))
+    loop.run_until_complete(main())
