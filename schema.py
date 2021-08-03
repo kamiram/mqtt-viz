@@ -100,7 +100,6 @@ class Sensor(base, FieldsInit):
     cnt_sockets = Column(String(50), nullable=False, default='')
     active_sockets = Column(String(50), nullable=False, default='')
     cycle_time = Column(Float, nullable=False, default='0')
-    last_time = Column(Float, nullable=False, default='0')
     status = Column(Integer, nullable=False, default=SensorStatus.unknown)
     mqtt_label = Column(Integer, nullable=False, default=0)
 
@@ -139,4 +138,8 @@ class Sensor(base, FieldsInit):
     ]
 
     def as_dict(self):
-        return {field: str(getattr(self, field, '')) for field in self.dict_fields}
+        def value(v):
+            if type(v) is float:
+                return str(round(v, 2))
+            return str(v)
+        return {field: value(getattr(self, field, '')) for field in self.dict_fields}

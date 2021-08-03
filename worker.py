@@ -1,59 +1,52 @@
 import asyncio
-import signal
-from gmqtt import Client as MQTTClient
+import json
+from datetime import datetime
+from aiohttp import web
+import socketio
+from asyncio_mqtt import Client
+
+import config_local as conf
+
+loop = asyncio.get_event_loop()
+
+app = web.Application()
+sio = socketio.AsyncServer(async_mode='aiohttp', cors_allowed_origins='*')
+
+last_active_time = dict()
 
 
-import config_local
-
-import uvloop
-
-asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-STOP = asyncio.Event()
-
-
-def on_connect(client, flags, rc, properties):
-    print('Connected')
-    client.subscribe(config_local.MQTT_TOPIC + '/#', qos=0)
-
-
-def on_message(client, topic, payload, qos, properties):
-    print('RECV MSG:', payload)
-
-
-def on_disconnect(client, packet, exc=None):
-    print('Disconnected')
-
-
-def on_subscribe(client, mid, qos, properties):
-    print('SUBSCRIBED')
-
-
-def ask_exit(*args):
-    STOP.set()
-
-
-async def main():
-    client = MQTTClient("viz")
-
-    client.on_connect = on_connect
-    client.on_message = on_message
-    client.on_disconnect = on_disconnect
-    client.on_subscribe = on_subscribe
-
-    client.set_auth_credentials(username=config_local.MQTT_USERNAME, password=config_local.MQTT_PASSWORD)
-    await client.connect(
-        config_local.MQTT_BROKER_URL,
-        port=config_local.MQTT_BROKER_PORT,
-        keepalive=config_local.MQTT_KEEPALIVE
-    )
+async def mqtt_worker():
+    async with Client(
+                hostname=conf.MQTT_BROKER_HOST,
+                port=conf.MQTT_BROKER_PORT,
+                username=conf.MQTT_USERNAME,
+                password=conf.MQTT_PASSWORD,
+                keepalive=conf.MQTT_KEEPALIVE
+            ) as client:
+        async with client.unfiltered_messages() as messages:
+            await client.subscribe(f'{conf.MQTT_TOPIC}/#')
+            async for message in messages:
+                message = json.loads(message.payload.decode())
+                if message['value'] != 'OFF':
+                    continue
+                port = message['port']
+                if port in last_active_time:
+                    active_time = datetime.now().timestamp() - last_active_time[port]
+                    data = {
+                        'id': port,
+                        'cycle_active_time': active_time,
+                    }
+                    await sio.emit('active_time_update', data)
+                last_active_time[port] = datetime.now().timestamp()
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
+    sio.attach(app)
 
-    loop.add_signal_handler(signal.SIGINT, ask_exit)
-    loop.add_signal_handler(signal.SIGTERM, ask_exit)
+    runner = web.AppRunner(app)
+    loop.run_until_complete(runner.setup())
+    site = web.TCPSite(runner, host='0.0.0.0', port=conf.SOCKET_SERVER_PORT)
 
-    await main()
-
-    loop.run_until_complete()
+    loop.create_task(site.start())
+    loop.create_task(mqtt_worker())
+    loop.run_forever()
