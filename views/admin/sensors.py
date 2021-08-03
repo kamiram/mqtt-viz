@@ -8,7 +8,7 @@ from . import AdminViewMixin
 
 class SensorsAdminView(AdminViewMixin, ModelView):
     column_list = [
-        'type', 'model', 'number', 'product', 'pressform', 'cnt_sockets_extra', 'status', 'mqtt_label',
+        'type', 'model', 'number', 'product', 'pressform', 'cnt_sockets_extra', 'status_name', 'mqtt_label',
     ]
     # form_columns = ['is_active', 'is_admin', 'username', 'newpassword']
 
@@ -21,7 +21,7 @@ class SensorsAdminView(AdminViewMixin, ModelView):
         'model': 'Модель',
         'number': 'Номер',
         'product': 'Продукт',
-        'pressform': 'Пресс-форма',
+        'pressform': 'Прессформа',
         'cnt_sockets': 'Кол-во гнёзд',
         'active_sockets': 'Акт. кол-во гнёзд',
         'cycle_time': 'Время цикла',
@@ -29,7 +29,8 @@ class SensorsAdminView(AdminViewMixin, ModelView):
         'cycle_time_extra': 'Время цикла',
         'cnt_sockets_extra': 'Разъемы',
         'status': 'Статус',
-        'mqtt_label': 'Имя топика MQTT',
+        'status_name': 'Статус',
+        'mqtt_label': 'MQTT',
     }
 
     form_choices = {

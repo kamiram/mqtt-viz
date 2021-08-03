@@ -105,6 +105,10 @@ class Sensor(base, FieldsInit):
     mqtt_label = Column(Integer, nullable=False, default=0)
 
     @property
+    def status_name(self):
+        return SensorStatus.names.get(self.status, '')
+
+    @property
     def status_color(self):
         if self.status == SensorStatus.work:
             return 'gray'
