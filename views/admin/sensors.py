@@ -1,6 +1,4 @@
-from flask import jsonify, current_app
 from flask_admin.contrib.sqla import ModelView
-from wtforms import PasswordField
 
 from schema import Sensor, SensorStatus
 from . import AdminViewMixin

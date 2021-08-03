@@ -17,6 +17,9 @@ def register_admin(app):
     from .index import AdminIndexView
     from .user import UserAdminView
     from .sensors import SensorsAdminView
+    from .models import SensorsModelAdminView
+    from .pressforms import SensorsPressformAdminView
+    from .products import  SensorsProductAdminView
 
     admin = Admin(
         app,
@@ -26,3 +29,9 @@ def register_admin(app):
 
     admin.add_view(UserAdminView(app.db.session))
     admin.add_view(SensorsAdminView(app.db.session))
+
+    admin.add_view(SensorsModelAdminView(app.db.session, category='Списки'))
+    admin.add_view(SensorsProductAdminView(app.db.session, category='Списки'))
+    admin.add_view(SensorsPressformAdminView(app.db.session, category='Списки'))
+
+

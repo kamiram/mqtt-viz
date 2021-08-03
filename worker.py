@@ -1,11 +1,9 @@
 import asyncio
-import os
 import signal
-import time
+from gmqtt import Client as MQTTClient
+
 
 import config_local
-
-from gmqtt import Client as MQTTClient
 
 import uvloop
 
@@ -25,11 +23,14 @@ def on_message(client, topic, payload, qos, properties):
 def on_disconnect(client, packet, exc=None):
     print('Disconnected')
 
+
 def on_subscribe(client, mid, qos, properties):
     print('SUBSCRIBED')
 
+
 def ask_exit(*args):
     STOP.set()
+
 
 async def main():
     client = MQTTClient("viz")
@@ -47,14 +48,12 @@ async def main():
     )
 
 
-    await STOP.wait()
-    await client.disconnect()
-
-
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
 
     loop.add_signal_handler(signal.SIGINT, ask_exit)
     loop.add_signal_handler(signal.SIGTERM, ask_exit)
 
-    loop.run_until_complete(main())
+    await main()
+
+    loop.run_until_complete()

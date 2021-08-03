@@ -90,11 +90,11 @@ class Sensor(base, FieldsInit):
     __tablename__ = 'sensor'
     id = Column(Integer, primary_key=True)
     type = Column(String(50), nullable=False, default='')
-    model_id = Column(Integer, ForeignKey('sensor_model.id'), index=True, nullable=False)
+    model_id = Column(Integer, ForeignKey('sensor_model.id'), index=True, nullable=True)
     model = relationship(SensorModel)
-    product_id = Column(Integer, ForeignKey('sensor_product.id'), index=True, nullable=False)
+    product_id = Column(Integer, ForeignKey('sensor_product.id'), index=True, nullable=True)
     product = relationship('SensorProduct')
-    pressform_id = Column(Integer, ForeignKey('sensor_pressform.id'), index=True, nullable=False)
+    pressform_id = Column(Integer, ForeignKey('sensor_pressform.id'), index=True, nullable=True)
     pressform = relationship(SensorPressform)
     number = Column(Integer, nullable=False, default=0)
     cnt_sockets = Column(String(50), nullable=False, default='')
@@ -139,4 +139,4 @@ class Sensor(base, FieldsInit):
     ]
 
     def as_dict(self):
-        return {field: str(getattr(self, field)) for field in self.dict_fields}
+        return {field: str(getattr(self, field, '')) for field in self.dict_fields}

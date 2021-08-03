@@ -62,7 +62,7 @@ def register_commands(app):
                         sensor.pressform_id = k
                         f_flag += 1
                         break
-                if f_flag == 3:
+                if True or f_flag == 3:
                     session.add(sensor)
         session.commit()
     app.cli.add_command(sensors_cli)
