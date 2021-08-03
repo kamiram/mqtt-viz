@@ -8,7 +8,7 @@ from . import AdminViewMixin
 
 class SensorsAdminView(AdminViewMixin, ModelView):
     column_list = [
-        # 'type', 'model', 'number', 'product', 'pressform', 'cnt_sockets_extra', 'status', 'mqtt_label',
+        'type', 'model', 'number', 'product', 'pressform', 'cnt_sockets_extra', 'status', 'mqtt_label',
     ]
     # form_columns = ['is_active', 'is_admin', 'username', 'newpassword']
 
@@ -33,14 +33,15 @@ class SensorsAdminView(AdminViewMixin, ModelView):
     }
 
     form_choices = {
-        # 'status': [(k, v) for k, v in SensorStatus.names.items()]
+        'status': [(k, v) for k, v in SensorStatus.names.items()]
     }
 
     def __init__(self, session, *args, **kwargs):
         super().__init__(Sensor, session, name='Оборудование', *args, **kwargs)
 
     def after_model_change(self, form, model, is_created):
-        data = {field: getattr(model, field) for field in self.column_labels.keys()}
-        data['id'] = model.id
-        print(data)
-        current_app.socketio.emit('message', data=data)
+        # data = {field: getattr(model, field) for field in self.column_labels.keys()}
+        # data['id'] = model.id
+        # print(data)
+        # current_app.socketio.emit('message', data=data)
+        return

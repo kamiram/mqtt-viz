@@ -13,11 +13,12 @@ function loadData(httpServerUrl){
         blocks.push(block);
       }
       $('#content').html(blocks.join(''));
-      var fields = ['number', 'pressform', 'model', 'product', 'cnt_sockets', 'active_sockets'];
+      var fields = ['number', 'pressform', 'model', 'product', 'cnt_sockets', 'active_sockets', 'cycle_time'];
       for(var i=0; i < data.length; i++){
         for(var j=0; j < fields.length; j++){
              $(`#block-${data[i].id} .value-${fields[j]}`).html(data[i][fields[j]]);
         }
+        $(`#block-${data[i].id}`).attr('class', `block status-${data[i].status_color}`);
       }
     });
 }

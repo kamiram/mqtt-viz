@@ -100,25 +100,14 @@ class Sensor(base, FieldsInit):
     cnt_sockets = Column(String(50), nullable=False, default='')
     active_sockets = Column(String(50), nullable=False, default='')
     cycle_time = Column(Float, nullable=False, default='0')
-    cycle_active_time = Column(Float, nullable=False, default='0')
     last_time = Column(Float, nullable=False, default='0')
     status = Column(Integer, nullable=False, default=SensorStatus.unknown)
     mqtt_label = Column(Integer, nullable=False, default=0)
 
     @property
-    def status_blink(self):
-        if self.status == SensorStatus.work and self.cycle_active_time >= self.cycle_time * 2:
-            return True
-        return False
-
-    @property
     def status_color(self):
         if self.status == SensorStatus.work:
-            if self.cycle_active_time <= self.cycle_time * 1.2:
-                return 'green'
-            if self.cycle_active_time <= self.cycle_time * 2:
-                return 'yellowblink'
-            return 'yellow'
+            return 'gray'
         if self.status == SensorStatus.adjustment:
             return 'orange'
         if self.status == SensorStatus.smed:
@@ -141,7 +130,8 @@ class Sensor(base, FieldsInit):
         return f'{self.id}: {self.model} - {self.product}'
 
     dict_fields = [
-        'id', 'type', 'model', 'product', 'pressform', 'number', 'cnt_sockets', 'active_sockets', 'status_color',
+        'id', 'type', 'model', 'product', 'pressform', 'number',
+        'cnt_sockets', 'active_sockets', 'status_color', 'cycle_time',
     ]
 
     def as_dict(self):
