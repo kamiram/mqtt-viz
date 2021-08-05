@@ -8,7 +8,7 @@
 <script src="{{url_for('.static', filename='socket.io.min.js')}}"></script>
 <script language="JavaScript">
   document.addEventListener("DOMContentLoaded", () => {
-    initSystem('{{ config['SOCKET_SERVER_URL'] }}', '{{ config['HTTP_SERVER_URL'] }}');
+    initSystem();
   });
 </script>
 {% endblock %}

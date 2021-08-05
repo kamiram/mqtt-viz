@@ -42,8 +42,7 @@ def create_app():
 
     bootstrap = Bootstrap(app)
 
-    app.add_url_rule('/', view_func=IndexView.as_view('index'))
-    app.add_url_rule('/index.html', view_func=IndexView.as_view('index.html'))
+    app.add_url_rule('/', view_func=IndexView.as_view('panel'))
     app.add_url_rule('/data.json', view_func=JsonDataView.as_view('data.json'))
 
     register_admin(app)

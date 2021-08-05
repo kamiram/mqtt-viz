@@ -1,31 +1,43 @@
+#!/usr/bin/env python
 import asyncio
 import json
 from datetime import datetime
-from aiohttp import web
 import socketio
+from aiohttp.web_middlewares import middleware
+from aiohttp_wsgi import WSGIHandler
 from asyncio_mqtt import Client
+from aiohttp import web
+from wsgi import flask_wsgi
 
 import config_local as conf
 
 loop = asyncio.get_event_loop()
 
 app = web.Application()
-sio = socketio.AsyncServer(async_mode='aiohttp', cors_allowed_origins='*')
+sio = socketio.AsyncServer(async_mode='aiohttp')
+wsgi_handler = WSGIHandler(flask_wsgi)
 
 last_active_time = dict()
 
 
 async def emit_update_socket(data):
-    await sio.emit('sensor_update', dict(data))
+    await sio.emit('sensor_update', json.loads(data))
 
 
-async def update_socket(request):
-    data = await request.post()
-    loop.create_task(emit_update_socket(data))
-    return web.Response(text="Try to emit update")
+@web.middleware
+async def socketio_emit_middleware(request, handler):
+    response = await handler(request)
+    if 'X-SocketIO-Emit-SensorUpdate' in response.headers:
+        loop.create_task(emit_update_socket(response.headers['X-SocketIO-Emit-SensorUpdate']))
+    return response
 
 
-app.add_routes([web.post('/update_sensor', update_socket)])
+app.middlewares.append(socketio_emit_middleware)
+
+app.router.add_static('/static/', path='./static/', name='static')
+app.router.add_route('*', '/{path_info:admin/.*}',  wsgi_handler)
+app.router.add_route('*', '/{path_info:$}',  wsgi_handler)
+app.router.add_route('*', '/{path_info:data.json}',  wsgi_handler)
 
 
 async def mqtt_worker():
@@ -40,6 +52,7 @@ async def mqtt_worker():
             await client.subscribe(f'{conf.MQTT_TOPIC}/#')
             async for message in messages:
                 message = json.loads(message.payload.decode())
+                # print(json.dumps(message, indent=4))
                 if message['value'] != 'OFF':
                     continue
                 port = message['port']

@@ -1,4 +1,4 @@
-function loadData(httpServerUrl){
+function loadData(){
     $.ajax({
       type: "POST",
       url: "/data.json",
@@ -23,20 +23,22 @@ function loadData(httpServerUrl){
     });
 }
 
-function initSystem(socketServerUrl, httpServerUrl){
-  loadData(httpServerUrl);
-  ioClient = io.connect(socketServerUrl);
+function initSystem(){
+  loadData();
+  ioClient = io.connect();
   ioClient.on("connect", socket => {
-    console.log("connected to server " + socketServerUrl);
+    console.log("connected to socketIO server ");
     ioClient.emit("message", {data: "connected"});
+
     ioClient.on("sensor_update", function(msg) {
-        console.log(msg);
+        console.log('Sensor update:', msg);
         var fields = ['number', 'pressform', 'model', 'product', 'cnt_sockets', 'active_sockets', 'cycle_time'];
         for(var j=0; j < fields.length; j++){
              $(`#block-${msg.id} .value-${fields[j]}`).html(msg[fields[j]]);
         }
         $(`#block-${msg.id}`).attr('class', `block status-${msg.status_color}`);
     });
+
     ioClient.on("active_time_update", function(msg) {
         $(`#block-${msg.id}`).attr('class', `block`);
         var cycle_time = parseFloat($(`#block-${msg.id} .value-cycle_time`).html());
